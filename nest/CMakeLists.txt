@@ -68,6 +68,7 @@ target_include_directories( nest PRIVATE
     ${PROJECT_SOURCE_DIR}/sli
     ${PROJECT_SOURCE_DIR}/nestkernel
     ${SLI_MODULE_INCLUDE_DIRS}
+    ${PYTHON_INCLUDE_DIRS}
     )
 
 target_compile_definitions( nest PRIVATE
@@ -84,12 +85,6 @@ target_include_directories( nest_lib PRIVATE
     ${SLI_MODULE_INCLUDE_DIRS}
     ${PYTHON_INCLUDE_DIRS}
     )
-
-if ( HAVE_PYTHON )
-  target_compile_definitions( nest_lib PRIVATE
-      -D_IS_PYNEST
-      )
-endif ()
 
 install( TARGETS nest nest_lib
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}

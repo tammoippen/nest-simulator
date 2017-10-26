@@ -80,16 +80,11 @@ sli_logging( const nest::LoggingEvent& e )
     static_cast< int >( e.severity ), e.function.c_str(), e.message.c_str() );
 }
 
-#ifndef _IS_PYNEST
-int
-neststartup( int* argc, char*** argv, SLIInterpreter& engine )
-#else
 int
 neststartup( int* argc,
   char*** argv,
   SLIInterpreter& engine,
   std::string modulepath )
-#endif
 {
   nest::init_nest( argc, argv );
 
@@ -175,14 +170,15 @@ neststartup( int* argc,
 #endif
 #endif
 
-#ifdef _IS_PYNEST
-  // add the init-script to the list of module initializers
-  ArrayDatum* ad = dynamic_cast< ArrayDatum* >(
-    engine.baselookup( engine.commandstring_name ).datum() );
-  assert( ad != NULL );
-  ad->push_back(
-    new StringDatum( "(" + modulepath + "/pynest-init.sli) run" ) );
-#endif
+  if ( modulepath.compare( "" ) != 0 )
+  {
+    // add the init-script to the list of module initializers
+    ArrayDatum* ad = dynamic_cast< ArrayDatum* >(
+      engine.baselookup( engine.commandstring_name ).datum() );
+    assert( ad != NULL );
+    ad->push_back(
+      new StringDatum( "(" + modulepath + "/pynest-init.sli) run" ) );
+  }
 
   return engine.startup();
 }
@@ -194,7 +190,7 @@ nestshutdown( int exitcode )
   nest::KernelManager::destroy_kernel_manager();
 }
 
-#if defined( HAVE_LIBNEUROSIM ) && defined( _IS_PYNEST )
+#if defined( HAVE_LIBNEUROSIM )
 Datum*
 CYTHON_unpackConnectionGeneratorDatum( PyObject* obj )
 {
