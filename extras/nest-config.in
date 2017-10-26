@@ -66,7 +66,7 @@ while test $# -gt 0; do
         echo "@ALL_CXXFLAGS@"
         ;;
     --libs)
-        echo "-L$prefix/@CMAKE_INSTALL_LIBDIR@ @ALL_LIBS@"
+        echo "-L@CMAKE_INSTALL_FULL_LIBDIR@ @ALL_LIBS@"
         ;;
     --compiler)
         echo "@CMAKE_CXX_COMPILER@"
@@ -82,17 +82,16 @@ while test $# -gt 0; do
         echo "@static-libraries@"
         ;;
     --docdir)
-        echo "@CMAKE_INSTALL_DOCDIR@"
+        echo "@CMAKE_INSTALL_FULL_DOCDIR@"
         ;;
     --datadir)
-        echo "@CMAKE_INSTALL_DATADIR@"
+        echo "@CMAKE_INSTALL_FULL_DATADIR@"
         ;;
     --libdir)
-        echo "@CMAKE_INSTALL_LIBDIR@"
+        echo "@CMAKE_INSTALL_FULL_LIBDIR@"
         ;;
     *)
-        usage
-        exit 1
+        usage 1
         ;;
     esac
     shift

@@ -278,6 +278,8 @@ set( ALL_LIBS
   "-lrandom"
   "-lsli"
   "-lnestkernel"
+  "-lprecise"
+  "-lmodels"
   "-ltopology"
   "${OpenMP_CXX_FLAGS}"
   "${LTDL_LIBRARIES}"
