@@ -83,19 +83,3 @@ install( FILES ${topo_mpitests}
 FILTER_HEADERS("${topo_sources}" install_headers )
 install( FILES ${install_headers}
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/nest)
-
-if ( HAVE_PYTHON )
-  install( CODE "execute_process(
-    COMMAND ${PYTHON} setup.py build --build-base=${CMAKE_CURRENT_BINARY_DIR}/build
-                               install --prefix=${CMAKE_INSTALL_PREFIX}
-                                       --install-lib=${CMAKE_INSTALL_PREFIX}/${PYEXECDIR}
-                                       --install-scripts=${CMAKE_INSTALL_FULL_BINDIR}
-                                       --install-data=${CMAKE_INSTALL_FULL_DATADIR}
-    WORKING_DIRECTORY \"${CMAKE_CURRENT_BINARY_DIR}\")"
-      )
-
-  file( GLOB topo_examples "examples/*" )
-  install( FILES ${topo_examples}
-      DESTINATION ${CMAKE_INSTALL_DOCDIR}/examples/topology
-      )
-endif ()
