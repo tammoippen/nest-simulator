@@ -12,9 +12,5 @@ export NEST_DOC_DIR=$NEST_INSTALL_DIR/@CMAKE_INSTALL_DOCDIR@
 # The path where NEST looks for user modules.
 export NEST_MODULE_PATH=$NEST_INSTALL_DIR/@CMAKE_INSTALL_LIBDIR@/nest
 
-# The path where the PyNEST bindings are installed.
-export NEST_PYTHON_PREFIX=$NEST_INSTALL_DIR/@PYEXECDIR@
-export PYTHONPATH=$NEST_PYTHON_PREFIX:$PYTHONPATH
-
 # Make nest / sli /... executables visible.
 export PATH=$NEST_INSTALL_DIR/bin:$PATH
