@@ -323,20 +323,20 @@ configure_file(
     "${PROJECT_BINARY_DIR}/libnestutil/config.h" @ONLY
 )
 
-configure_file(
-    "${PROJECT_SOURCE_DIR}/pynest/setup.py.in"
-    "${PROJECT_BINARY_DIR}/pynest/setup.py" @ONLY
-)
+# configure_file(
+#     "${PROJECT_SOURCE_DIR}/pynest/setup.py.in"
+#     "${PROJECT_BINARY_DIR}/pynest/setup.py" @ONLY
+# )
 
 configure_file(
     "${PROJECT_SOURCE_DIR}/pynest/do_tests.py.in"
     "${PROJECT_BINARY_DIR}/pynest/do_tests.py" @ONLY
 )
 
-configure_file(
-    "${PROJECT_SOURCE_DIR}/topology/setup.py.in"
-    "${PROJECT_BINARY_DIR}/topology/setup.py" @ONLY
-)
+# configure_file(
+#     "${PROJECT_SOURCE_DIR}/topology/setup.py.in"
+#     "${PROJECT_BINARY_DIR}/topology/setup.py" @ONLY
+# )
 
 configure_file(
     "${PROJECT_SOURCE_DIR}/testsuite/do_tests.sh.in"
