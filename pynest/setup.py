@@ -38,7 +38,7 @@ def query_nest_config(kind):
                              '  stderr={}'.format(kind, stdout, stderr))
 
         return stdout.strip()
-    except FileNotFoundError:
+    except Exception:
         print('\n!!! Make sure nest is installed and `nest-config` is in the PATH !!!\n', file=sys.stderr)
         raise
 

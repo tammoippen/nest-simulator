@@ -18,13 +18,15 @@
 #
 # You should have received a copy of the GNU General Public License
 # along with NEST.  If not, see <http://www.gnu.org/licenses/>.
+from __future__ import absolute_import, print_function, unicode_literals
 
 """
 Initializer of PyNEST.
 """
 
-import sys
 import os
+import pkgutil
+import sys
 
 # This is a workaround for readline import errors encountered with Anaconda
 # Python running on Ubuntu, when invoked from the terminal
@@ -67,7 +69,7 @@ except AttributeError:
                 # RTLD_NOW (OSX)
                 sys.setdlopenflags(ctypes.RTLD_GLOBAL)
 
-from . import pynestkernel as _kernel      # noqa
+from nest import pynestkernel as _kernel      # noqa
 from .lib import hl_api_helper as hl_api   # noqa
 
 engine = _kernel.NESTEngine()
@@ -213,7 +215,8 @@ def init(argv):
         nest_argv.remove("--sli-debug")
         nest_argv.append("--debug")
 
-    initialized = engine.init(nest_argv, __path__[0])
+    initialized |= engine.init(nest_argv, __path__[0])
+
 
     if initialized:
         if not quiet:
@@ -255,9 +258,8 @@ from .lib.hl_api_helper import *    # noqa
 # directory and import the content of all Python files therein into
 # the global namespace. This makes the API functions of PyNEST itself
 # and those of extra modules available to the user.
-for name in os.listdir(os.path.join(os.path.dirname(__file__), "lib")):
-    if name.endswith(".py") and not name.startswith('__'):
-        exec("from .lib.{0} import *".format(name[:-3]))
+for (importer_, name, ispkg_) in pkgutil.iter_modules(sys.modules[__name__ + '.lib'].__path__):
+    exec('from .lib.{} import *'.format(name))
 
 if 'DELAY_PYNEST_INIT' not in os.environ:
     init(sys.argv)
