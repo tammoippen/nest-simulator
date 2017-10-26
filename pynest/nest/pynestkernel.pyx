@@ -21,6 +21,7 @@
 #
 # distutils: language = c++
 #
+from __future__ import absolute_import, unicode_literals
 
 import cython
 
@@ -55,10 +56,10 @@ cdef string SLI_TYPE_PARAMETER = b"parametertype"
 
 DEF CONN_ELMS = 5
 
-cdef unicode CONN_NAME_SRC = u"source"
-cdef unicode CONN_NAME_SYN = u"synapse_modelid"
-cdef unicode CONN_NAME_PRT = u"port"
-cdef unicode CONN_NAME_THREAD = u"target_thread"
+cdef unicode CONN_NAME_SRC = "source"
+cdef unicode CONN_NAME_SYN = "synapse_modelid"
+cdef unicode CONN_NAME_PRT = "port"
+cdef unicode CONN_NAME_THREAD = "target_thread"
 
 CONN_LEN = CONN_ELMS
 
@@ -283,7 +284,7 @@ cdef class SLIDatum(object):
 
     def __cinit__(self):
 
-        self.dtype = u""
+        self.dtype = ""
         self.thisptr = NULL
 
     def __dealloc__(self):

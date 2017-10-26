@@ -1,0 +1,3 @@
+recursive-include nest *.py *.pyx *.pxd *.sli *.dat *.md
+recursive-include examples *.py *.md *.music *.txt README
+include *.py *.cfg README.md LICENSE
