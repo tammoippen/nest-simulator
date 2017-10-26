@@ -348,7 +348,7 @@ function( NEST_PROCESS_WITH_PYTHON )
     # Localize the Python interpreter
     if ( ${with-python} STREQUAL "ON" )
       find_package( PythonInterp )
-    elseif ( ${with-python} STREQUAL "2" )  
+    elseif ( ${with-python} STREQUAL "2" )
       find_package( PythonInterp 2 REQUIRED )
     elseif ( ${with-python} STREQUAL "3" )
       find_package( PythonInterp 3 REQUIRED )
@@ -360,7 +360,7 @@ function( NEST_PROCESS_WITH_PYTHON )
       set( PYTHON ${PYTHON_EXECUTABLE} PARENT_SCOPE )
       set( PYTHON_VERSION ${PYTHON_VERSION_STRING} PARENT_SCOPE )
 
-      # Localize Python lib/header files and make sure that their version matches 
+      # Localize Python lib/header files and make sure that their version matches
       # the Python interpreter version !
       find_package( PythonLibs ${PYTHON_VERSION_STRING} EXACT )
       if ( PYTHONLIBS_FOUND )
@@ -370,23 +370,6 @@ function( NEST_PROCESS_WITH_PYTHON )
         set( PYTHON_INCLUDE_DIRS "${PYTHON_INCLUDE_DIRS}" PARENT_SCOPE )
         set( PYTHON_LIBRARIES "${PYTHON_LIBRARIES}" PARENT_SCOPE )
 
-        if ( cythonize-pynest )
-          find_package( Cython )
-          if ( CYTHON_FOUND )
-            # confirmed not working: 0.15.1
-            # confirmed working: 0.19.2+
-            # in between unknown
-            if ( CYTHON_VERSION VERSION_LESS "0.19.2" )
-              message( FATAL_ERROR "Your Cython version is too old. Please install "
-                                   "newer version (0.19.2+)" )
-            endif ()
-
-            # export found variables to parent scope
-            set( CYTHON_FOUND "${CYTHON_FOUND}" PARENT_SCOPE )
-            set( CYTHON_EXECUTABLE "${CYTHON_EXECUTABLE}" PARENT_SCOPE )
-            set( CYTHON_VERSION "${CYTHON_VERSION}" PARENT_SCOPE )
-          endif ()
-        endif ()
         set( PYEXECDIR "${CMAKE_INSTALL_LIBDIR}/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages" PARENT_SCOPE )
       endif ()
     endif ()
@@ -470,6 +453,10 @@ function( NEST_PROCESS_WITH_LIBNEUROSIM )
     find_package( LibNeurosim )
     if ( LIBNEUROSIM_FOUND )
       set( HAVE_LIBNEUROSIM ON PARENT_SCOPE )
+
+      if ( NOT HAVE_PYTHON )
+        message( FATAL_ERROR "Compilation with LibNeurosim requires -Dwith-python not set to OFF!" )
+      endif ()
 
       include_directories( ${LIBNEUROSIM_INCLUDE_DIRS} )
       # is linked in conngen/CMakeLists.txt
