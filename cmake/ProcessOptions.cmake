@@ -182,17 +182,11 @@ function( NEST_PROCESS_STATIC_LIBRARIES )
       set( CMAKE_INSTALL_RPATH
           "@loader_path/../${CMAKE_INSTALL_LIBDIR}"
           "@loader_path/../${CMAKE_INSTALL_LIBDIR}/nest"
-          # for pynestkernel: @loader_path at <prefix>/lib/python2.7/site-packages/nest
-          "@loader_path/../../.."
-          "@loader_path/../../../nest"
           PARENT_SCOPE )
     else ()
       set( CMAKE_INSTALL_RPATH
           "\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}"
           "\$ORIGIN/../${CMAKE_INSTALL_LIBDIR}/nest"
-          # for pynestkernel: origin at <prefix>/lib/python2.7/site-packages/nest
-          "\$ORIGIN/../../.."
-          "\$ORIGIN/../../../nest"
           PARENT_SCOPE )
     endif ()
 
@@ -340,45 +334,6 @@ function( NEST_PROCESS_WITH_GSL )
   endif ()
 endfunction()
 
-function( NEST_PROCESS_WITH_PYTHON )
-  # Find Python
-  set( HAVE_PYTHON OFF PARENT_SCOPE )
-  if ( ${with-python} STREQUAL "ON" OR  ${with-python} STREQUAL "2" OR  ${with-python} STREQUAL "3" )
-
-    # Localize the Python interpreter
-    if ( ${with-python} STREQUAL "ON" )
-      find_package( PythonInterp )
-    elseif ( ${with-python} STREQUAL "2" )
-      find_package( PythonInterp 2 REQUIRED )
-    elseif ( ${with-python} STREQUAL "3" )
-      find_package( PythonInterp 3 REQUIRED )
-    endif ()
-
-    if ( PYTHONINTERP_FOUND )
-      set( PYTHONINTERP_FOUND "${PYTHONINTERP_FOUND}" PARENT_SCOPE )
-      set( PYTHON_EXECUTABLE ${PYTHON_EXECUTABLE} PARENT_SCOPE )
-      set( PYTHON ${PYTHON_EXECUTABLE} PARENT_SCOPE )
-      set( PYTHON_VERSION ${PYTHON_VERSION_STRING} PARENT_SCOPE )
-
-      # Localize Python lib/header files and make sure that their version matches
-      # the Python interpreter version !
-      find_package( PythonLibs ${PYTHON_VERSION_STRING} EXACT )
-      if ( PYTHONLIBS_FOUND )
-        set( HAVE_PYTHON ON PARENT_SCOPE )
-        # export found variables to parent scope
-        set( PYTHONLIBS_FOUND "${PYTHONLIBS_FOUND}" PARENT_SCOPE )
-        set( PYTHON_INCLUDE_DIRS "${PYTHON_INCLUDE_DIRS}" PARENT_SCOPE )
-        set( PYTHON_LIBRARIES "${PYTHON_LIBRARIES}" PARENT_SCOPE )
-
-        set( PYEXECDIR "${CMAKE_INSTALL_LIBDIR}/python${PYTHON_VERSION_MAJOR}.${PYTHON_VERSION_MINOR}/site-packages" PARENT_SCOPE )
-      endif ()
-    endif ()
-  elseif ( ${with-python} STREQUAL "OFF" )
-  else ()
-    message( FATAL_ERROR "Invalid option: -Dwith-python=" ${with-python} )
-  endif ()
-endfunction()
-
 function( NEST_PROCESS_WITH_OPENMP )
   # Find OPENMP
   if ( with-openmp )
@@ -400,7 +355,7 @@ function( NEST_PROCESS_WITH_OPENMP )
       set( CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${OpenMP_C_FLAGS}" PARENT_SCOPE )
       set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}" PARENT_SCOPE )
     else()
-      message( FATAL_ERROR "CMake can not find OpenMP." ) 
+      message( FATAL_ERROR "CMake can not find OpenMP." )
     endif ()
   endif ()
 endfunction()
@@ -453,10 +408,6 @@ function( NEST_PROCESS_WITH_LIBNEUROSIM )
     find_package( LibNeurosim )
     if ( LIBNEUROSIM_FOUND )
       set( HAVE_LIBNEUROSIM ON PARENT_SCOPE )
-
-      if ( NOT HAVE_PYTHON )
-        message( FATAL_ERROR "Compilation with LibNeurosim requires -Dwith-python not set to OFF!" )
-      endif ()
 
       include_directories( ${LIBNEUROSIM_INCLUDE_DIRS} )
       # is linked in conngen/CMakeLists.txt

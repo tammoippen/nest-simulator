@@ -68,7 +68,6 @@ target_include_directories( nest PRIVATE
     ${PROJECT_SOURCE_DIR}/sli
     ${PROJECT_SOURCE_DIR}/nestkernel
     ${SLI_MODULE_INCLUDE_DIRS}
-    ${PYTHON_INCLUDE_DIRS}
     )
 
 target_compile_definitions( nest PRIVATE
@@ -83,7 +82,6 @@ target_include_directories( nest_lib PRIVATE
     ${PROJECT_SOURCE_DIR}/sli
     ${PROJECT_SOURCE_DIR}/nestkernel
     ${SLI_MODULE_INCLUDE_DIRS}
-    ${PYTHON_INCLUDE_DIRS}
     )
 
 install( TARGETS nest nest_lib

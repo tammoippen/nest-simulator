@@ -27,6 +27,9 @@ from libcpp.vector cimport vector
 from cpython.ref cimport PyObject
 
 
+cdef extern from "config.h":
+    cdef int HAVE_LIBNEUROSIM
+
 cdef extern from "name.h":
     cppclass Name:
         string toString() except +
@@ -137,14 +140,14 @@ cdef extern from "neststartup.h":
     int neststartup(int*, char***, SLIInterpreter&, string) except +
     void nestshutdown(int) except +
 
+
+cdef extern from "pynestkernel.h":
     # Real support for CSA has to be implemented below the Cython level,
     # or else we won't be able to distribute pre-generated kernels
     #
     cbool isConnectionGenerator "CYTHON_isConnectionGenerator" (PyObject*)
     Datum* unpackConnectionGeneratorDatum "CYTHON_unpackConnectionGeneratorDatum" (PyObject*) except +
 
-
-cdef extern from *:
     # CYTHON_ADDR and CYTHON_DEREF macros are defined in setup.py
     Token* addr_tok "CYTHON_ADDR" (Token*)
 

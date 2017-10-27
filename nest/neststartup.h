@@ -26,27 +26,6 @@
 // C++ includes:
 #include <string>
 
-// Generated includes:
-#include "config.h"
-
-#if defined( HAVE_LIBNEUROSIM )
-
-// External includes:
-#include <neurosim/pyneurosim.h>
-
-// Includes from conngen:
-#include "conngenmodule.h"
-
-// Includes from sli:
-#include "datum.h"
-
-#define CYTHON_isConnectionGenerator( x ) PNS::isConnectionGenerator( x )
-Datum* CYTHON_unpackConnectionGeneratorDatum( PyObject* );
-
-#else // #if defined( HAVE_LIBNEUROSIM )
-#define CYTHON_isConnectionGenerator( x ) 0
-#define CYTHON_unpackConnectionGeneratorDatum( x ) NULL
-#endif // #if defined( HAVE_LIBNEUROSIM )
 
 class SLIInterpreter;
 

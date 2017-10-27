@@ -69,14 +69,13 @@ if '--no-cythonize' in sys.argv:
 extensions = [Extension(
     name='nest.pynestkernel',
     sources=sources,
+    depends=['nest/pynestkernel.h'],
     include_dirs=include_dirs,
     library_dirs=libdirs,
     runtime_library_dirs=libdirs,
     libraries=libs,
     extra_link_args=extra_link_args,
-    language='c++',
-    define_macros = [('CYTHON_DEREF( x )', '( *x )'),
-                     ('CYTHON_ADDR( x )', '( &x )')],
+    language='c++'
 )]
 
 

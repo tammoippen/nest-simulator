@@ -59,8 +59,6 @@ set( with-openmp ON CACHE BOOL "Enable OpenMP multithreading. Optional: set OMP 
 set( with-gsl ON CACHE STRING "Find a gsl library. To set a specific gsl installation, set install path. [default=ON]" )
 set( with-readline ON CACHE STRING "Find a readline library. To set a specific readline, set install path. [default=ON]" )
 set( with-ltdl ON CACHE STRING "Find a ltdl library. To set a specific ltdl, set install path. [default=ON]" )
-set( with-python ON CACHE STRING "Build PyNEST. To set a specific Python, set install path. [default=ON]" )
-option( cythonize-pynest "Use Cython to cythonize pynestkernel.pyx. If OFF, PyNEST has to be build from a pre-cythonized pynestkernel.pyx. [default=ON]" ON )
 
 # Whether to build a 'mostly' static executable and static libraries.
 option( static-libraries "Build static executable and libraries. [default=OFF]" OFF )
@@ -159,7 +157,6 @@ nest_process_with_ps_array()
 nest_process_with_libltdl()
 nest_process_with_readline()
 nest_process_with_gsl()
-nest_process_with_python()
 nest_process_with_openmp()
 nest_process_with_mpi()
 nest_process_with_libneurosim()
@@ -195,25 +192,13 @@ enable_testing()
 set( TEST_LOGFILE ${PROJECT_BINARY_DIR}/reports/installcheck.log )
 file( MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/reports/ )
 
-if ( HAVE_PYTHON )
-  add_custom_target( installcheck
-    COMMAND ${CMAKE_COMMAND} -E env
-      NEST_PATH="${CMAKE_INSTALL_FULL_BINDIR}"
-      PYTHON="${PYTHON}"
-      NEST_PYTHONPATH="${CMAKE_INSTALL_PREFIX}/${PYEXECDIR}"
-      ${CMAKE_INSTALL_FULL_DATADIR}/extras/do_tests.sh --test-pynest
-    WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
-    COMMENT "Execute NEST's testsuite...."
-  )
-else ()
-  add_custom_target( installcheck
-    COMMAND ${CMAKE_COMMAND} -E env
-      NEST_PATH="${CMAKE_INSTALL_FULL_BINDIR}"
-      ${CMAKE_INSTALL_FULL_DATADIR}/extras/do_tests.sh
-    WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
-    COMMENT "Execute NEST's testsuite...."
-  )
-endif ()
+add_custom_target( installcheck
+  COMMAND ${CMAKE_COMMAND} -E env
+    NEST_PATH="${CMAKE_INSTALL_FULL_BINDIR}"
+    ${CMAKE_INSTALL_FULL_DATADIR}/extras/do_tests.sh --source-dir="${PROJECT_SOURCE_DIR}"
+  WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
+  COMMENT "Execute NEST's testsuite...."
+)
 
 ################################################################################
 ##################        Define Subdirectories here          ##################
@@ -235,9 +220,7 @@ add_subdirectory( nestkernel )
 add_subdirectory( precise )
 add_subdirectory( testsuite )
 add_subdirectory( topology )
-if ( HAVE_PYTHON )
-  add_subdirectory( pynest )
-endif ()
+add_subdirectory( pynest )
 
 ################################################################################
 ##################           Summary of flags                 ##################
@@ -311,7 +294,6 @@ endforeach ()
 
 if ( HAVE_LIBNEUROSIM )
   set( ALL_LIBS "-lconngen ${ALL_LIBS}" )
-  set( ALL_INCLUDES "-I${PROJECT_SOURCE_DIR}/conngen ${ALL_INCLUDES}" )
 endif ()
 
 ################################################################################

@@ -189,20 +189,3 @@ nestshutdown( int exitcode )
   nest::kernel().mpi_manager.mpi_finalize( exitcode );
   nest::KernelManager::destroy_kernel_manager();
 }
-
-#if defined( HAVE_LIBNEUROSIM )
-Datum*
-CYTHON_unpackConnectionGeneratorDatum( PyObject* obj )
-{
-  Datum* ret = NULL;
-  ConnectionGenerator* cg = NULL;
-
-  cg = PNS::unpackConnectionGenerator( obj );
-  if ( cg != NULL )
-  {
-    ret = static_cast< Datum* >( new nest::ConnectionGeneratorDatum( cg ) );
-  }
-
-  return ret;
-}
-#endif
