@@ -193,8 +193,7 @@ set( TEST_LOGFILE ${PROJECT_BINARY_DIR}/reports/installcheck.log )
 file( MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/reports/ )
 
 add_custom_target( installcheck
-  COMMAND ${CMAKE_COMMAND} -E env
-    NEST_PATH="${CMAKE_INSTALL_FULL_BINDIR}"
+  COMMAND export NEST_PATH="${CMAKE_INSTALL_FULL_BINDIR}" &&
     ${CMAKE_INSTALL_FULL_DATADIR}/extras/do_tests.sh --source-dir="${PROJECT_SOURCE_DIR}"
   WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
   COMMENT "Execute NEST's testsuite...."
