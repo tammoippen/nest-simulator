@@ -64,8 +64,8 @@ cdef unicode CONN_NAME_THREAD = "target_thread"
 CONN_LEN = CONN_ELMS
 
 
-cdef ARRAY_LONG = array.array('l')
-cdef ARRAY_DOUBLE = array.array('d')
+cdef ARRAY_LONG = array.array(b'l')
+cdef ARRAY_DOUBLE = array.array(b'd')
 
 
 cdef bint HAVE_NUMPY = False
