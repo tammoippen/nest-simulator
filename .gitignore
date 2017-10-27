@@ -4,6 +4,8 @@ libltdl/
 
 pynest/pynestkernel.cpp
 
+*.dylib
+*.so
 *.o
 *.lo
 *.la
