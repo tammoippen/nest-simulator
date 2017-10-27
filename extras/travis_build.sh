@@ -237,7 +237,6 @@ echo "+ + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + 
 echo "+               I N S T A L L   P y N E S T                                   +"
 echo "+ + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +"
 echo "MSGBLD0283: Running sudo pip install ../pynest."
-echo 'env'
 sudo -H pip --no-cache-dir install -v ../pynest
 echo "MSGBLD0286: PyNEST install completed."
 fi
