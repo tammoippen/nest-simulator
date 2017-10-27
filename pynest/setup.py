@@ -27,6 +27,8 @@ import sys
 from setuptools import Extension, find_packages, setup
 from setuptools.command.install import install
 
+print(os.environ['PATH'], os.path.isfile('/home/travis/build/tammoippen/nest-simulator/result/bin/nest-config'))
+
 # get NEST installation specific stuff
 def query_nest_config(kind):
     try:
