@@ -24,7 +24,7 @@
 # It is invoked by the top-level Travis script '.travis.yml'.
 #
 # NOTE: This shell script is tightly coupled to Python script
-#       'extras/parse_travis_log.py'. 
+#       'extras/parse_travis_log.py'.
 #       Any changes to message numbers (MSGBLDnnnn) or the variable name
 #      'file_names' have effects on the build/test-log parsing process.
 
@@ -48,16 +48,6 @@ if [ "$xMPI" = "1" ] ; then
     CONFIGURE_MPI="-Dwith-mpi=ON"
 else
     CONFIGURE_MPI="-Dwith-mpi=OFF"
-fi
-
-if [ "$xPYTHON" = "1" ] ; then
-   if [ "$TRAVIS_PYTHON_VERSION" == "2.7.13" ]; then
-      CONFIGURE_PYTHON="-DPYTHON-LIBRARY=~/virtualenv/python2.7.13/lib/python2.7 -DPYTHON_INCLUDE_DIR=~/virtualenv/python2.7.13/include/python2.7"
-   elif [ "$TRAVIS_PYTHON_VERSION" == "3.4.4" ]; then
-      CONFIGURE_PYTHON="-DPYTHON_LIBRARY=/usr/lib/x86_64-linux-gnu/libpython3.4m.so -DPYTHON_INCLUDE_DIR=/opt/python/3.4.4/include/python3.4m/"
-   fi
-else
-    CONFIGURE_PYTHON="-Dwith-python=OFF"
 fi
 
 if [ "$xMUSIC" = "1" ] ; then
@@ -146,14 +136,14 @@ fi
 export PATH=$HOME/.cache/bin:$PATH
 
 echo "MSGBLD0070: Retrieving changed files."
-  # Note: BUG: Extracting the filenames may not work in all cases. 
+  # Note: BUG: Extracting the filenames may not work in all cases.
   #            The commit range might not properly reflect the history.
   #            see https://github.com/travis-ci/travis-ci/issues/2668
 if [ "$TRAVIS_PULL_REQUEST" != "false" ]; then
    echo "MSGBLD0080: PULL REQUEST: Retrieving changed files using GitHub API."
    file_names=`curl "https://api.github.com/repos/$TRAVIS_REPO_SLUG/pulls/$TRAVIS_PULL_REQUEST/files" | jq '.[] | .filename' | tr '\n' ' ' | tr '"' ' '`
 else
-   echo "MSGBLD0090: Retrieving changed files using git diff."    
+   echo "MSGBLD0090: Retrieving changed files using git diff."
    file_names=`(git diff --name-only $TRAVIS_COMMIT_RANGE || echo "") | tr '\n' ' '`
 fi
 
@@ -171,7 +161,7 @@ echo
 # Set the command line arguments for the static code analysis script and execute it.
 
 # The names of the static code analysis tools executables.
-VERA=vera++                   
+VERA=vera++
 CPPCHECK=cppcheck
 CLANG_FORMAT=clang-format
 PEP8=pep8
@@ -216,7 +206,6 @@ cmake \
   -Dwith-boost=ON \
   $CONFIGURE_THREADING \
   $CONFIGURE_MPI \
-  $CONFIGURE_PYTHON \
   $CONFIGURE_MUSIC \
   $CONFIGURE_GSL \
   $CONFIGURE_LTDL \
@@ -239,20 +228,25 @@ echo "+               I N S T A L L   N E S T                                   
 echo "+ + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +"
 echo "MSGBLD0270: Running make install."
 make install
+source $NEST_RESULT/bin/nest_vars.sh
 echo "MSGBLD0280: Make install completed."
+
+if [ "$xPYTHON" = "1" ] ; then
+echo
+echo "+ + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +"
+echo "+               I N S T A L L   PyN E S T                                       +"
+echo "+ + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +"
+echo "MSGBLD0283: Running `pip install ../pynest`."
+sudo pip install -v ../pynest
+echo "MSGBLD0286: PyNEST install completed."
+fi
 
 echo
 echo "+ + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +"
 echo "+               R U N   N E S T   T E S T S U I T E                           +"
 echo "+ + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +"
 echo "MSGBLD0290: Running make installcheck."
-if [ "$TRAVIS_PYTHON_VERSION" == "2.7.13" ]; then
-    export PYTHONPATH=$HOME/.cache/csa.install/lib/python2.7/site-packages:$PYTHONPATH
-    export LD_LIBRARY_PATH=$HOME/.cache/csa.install/lib:$LD_LIBRARY_PATH
-elif [ "$TRAVIS_PYTHON_VERSION" == "3.4.4" ]; then
-    export PYTHONPATH=/usr/lib/x86_64-linux-gnu/:$PYTHONPATH
-    export LD_LIBRARY_PATH=$HOME/.cache/csa.install/lib:$LD_LIBRARY_PATH
-fi
+export LD_LIBRARY_PATH=$HOME/.cache/csa.install/lib:$LD_LIBRARY_PATH
 make installcheck
 echo "MSGBLD0300: Make installcheck completed."
 
