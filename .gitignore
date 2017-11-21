@@ -2,7 +2,7 @@
 
 libltdl/
 
-pynest/pynestkernel.cpp
+pynest/nest/pynestkernel.cpp
 
 *.dylib
 *.so
@@ -25,6 +25,8 @@ install/
 /nest/nest
 /nest/static_modules.h
 /pynest/do_tests.py
+/pynest/dist/
+/pynest/PyNEST.egg-info
 /reports/
 /sli/sli
 /testsuite/do_tests.sh
