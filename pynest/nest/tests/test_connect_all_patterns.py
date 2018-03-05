@@ -47,7 +47,7 @@ class TestConnectAllPatterns(unittest.TestCase):
         failing_tests = []
         for script in scripts:
             test_script = os.path.join(directory, script)
-            command = nest.sli_func("mpirun", 2, "nosetests",
+            command = nest.sli_func("mpirun", 2, "pytest",
                                     test_script)
             command = command.split()
             process = sp.Popen(command, stdout=sp.PIPE, stderr=sp.PIPE)
@@ -56,7 +56,7 @@ class TestConnectAllPatterns(unittest.TestCase):
             if retcode != 0:
                 failing_tests.append(script)
         self.assertTrue(not failing_tests, 'The following tests failed when ' +
-                        'executing with "mpirun -np 2 nosetests [script]": ' +
+                        'executing with "mpirun -np 2 pytest [script]": ' +
                         ", ".join(failing_tests))
 
 
