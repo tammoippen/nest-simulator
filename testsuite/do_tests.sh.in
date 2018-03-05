@@ -241,7 +241,7 @@ junit_close ()
 #   and strings describing the exit code.
 #
 #   If any of the variables CODES_SUCCESS, CODES_SKIPPED or CODES_FAILURE
-#   contain an entry for the exit code, the respective string is logged, 
+#   contain an entry for the exit code, the respective string is logged,
 #   and the test is either counted as passed or failed.
 #
 #   If none of the variables CODES_SUCCESS, CODES_SKIPPED or CODES_FAILURE
@@ -712,29 +712,25 @@ if test "x${TEST_PYNEST}" = xtrue ; then
     echo
     echo "Phase 7: Running PyNEST tests."
     echo "------------------------------"
-    
-    # If possible, we run using nosetests. To find out if nosetests work, 
-    # we proceed in two steps:
-    # 1. Check if nosetests is available
-    # 2. Check that nosetests supports --with-xunit by running nosetests.
-    #    We need to run nosetests on a directory without any Python test
-    #    files, because if they failed that would be interpreted as lack
-    #    of support for nosetests. We use the TEST_OUTDIR as Python-free
-    #    dummy directory to search for tests.
 
-    if command -v nosetests >/dev/null 2>&1 && nosetests --with-xunit --xunit-file=/dev/null --where=${TEST_OUTDIR} >/dev/null 2>&1; then
+    # If possible, we run using pytest.
+
+    if command -v pytest >/dev/null 2>&1 ; then
 
         echo
-        echo "  Using nosetests."
+        echo "  Using pytest."
         echo
 
-        nosetests -v --with-xunit --xunit-file=${TEST_OUTDIR}/pynest_tests.xml ${NEST_PYTHON_PREFIX:-@CMAKE_INSTALL_PREFIX@/@PYEXECDIR@}/nest/tests ${NEST_PYTHON_PREFIX:-@CMAKE_INSTALL_PREFIX@/@PYEXECDIR@}/nest/topology/tests 2>&1 \
-            | tee -a "${TEST_LOGFILE}" | grep -i --line-buffered "\.\.\. ok\|fail\|skip\|error" | sed 's/^/  /'
+        pytest -vvv --junitxml=${TEST_OUTDIR}/pynest_tests.xml \
+            ${NEST_PYTHON_PREFIX:-@CMAKE_INSTALL_PREFIX@/@PYEXECDIR@}/nest/tests \
+            ${NEST_PYTHON_PREFIX:-@CMAKE_INSTALL_PREFIX@/@PYEXECDIR@}/nest/topology/tests | tee -a ${TEST_LOGFILE}
 
-        PYNEST_TEST_TOTAL="$(  tail -n 3 ${TEST_LOGFILE} | grep Ran | cut -d' ' -f2 )"
-        PYNEST_TEST_SKIPPED="$(  tail -n 1 ${TEST_LOGFILE} | sed -$EXTENDED_REGEX_PARAM 's/.*SKIP=([0-9]+).*/\1/')"
-        PYNEST_TEST_FAILURES="$( tail -n 3 ${TEST_LOGFILE} | grep \( | sed -$EXTENDED_REGEX_PARAM 's/^[a-zA-Z]+ \((.*)\)/\1/' | sed -$EXTENDED_REGEX_PARAM 's/.*failures=([0-9]+).*/\1/' )"
-        PYNEST_TEST_ERRORS="$( tail -n 3 ${TEST_LOGFILE} | grep \( | sed -$EXTENDED_REGEX_PARAM 's/^[a-zA-Z]+ \((.*)\)/\1/' | sed -$EXTENDED_REGEX_PARAM 's/.*errors=([0-9]+).*/\1/' )"
+        result_line="$(  tail -n 3 ${TEST_LOGFILE} | grep '=====')"
+        PYNEST_TEST_FAILURES=`echo $result_line | sed -$EXTENDED_REGEX_PARAM 's/.* ([0-9]+) failed.*/\1/'`
+        PYNEST_TEST_ERRORS=`echo $result_line | sed -$EXTENDED_REGEX_PARAM 's/.* ([0-9]+) error.*/\1/'`
+        PYNEST_TEST_SKIPPED=`echo $result_line | sed -$EXTENDED_REGEX_PARAM 's/.* ([0-9]+) skipped.*/\1/'`
+        PYNEST_TEST_WARNINGS=`echo $result_line | sed -$EXTENDED_REGEX_PARAM 's/.* ([0-9]+) warnings.*/\1/'`
+        PYNEST_TEST_PASSED=`echo $result_line | sed -$EXTENDED_REGEX_PARAM 's/.* ([0-9]+) passed.*/\1/'`
 
         # check that PYNEST_TEST_FAILURES/PYNEST_TEST_ERRORS contain numbers
         if test ${PYNEST_TEST_FAILURES} -eq ${PYNEST_TEST_FAILURES} 2>/dev/null ; then
@@ -755,13 +751,24 @@ if test "x${TEST_PYNEST}" = xtrue ; then
         else
           PYNEST_TEST_SKIPPED=0
         fi
+        if test ${PYNEST_TEST_WARNINGS} -eq ${PYNEST_TEST_WARNINGS} 2>/dev/null ; then
+          # PYNEST_TEST_WARNINGS is a valid number
+          :
+        else
+          PYNEST_TEST_WARNINGS=0
+        fi
+        if test ${PYNEST_TEST_PASSED} -eq ${PYNEST_TEST_PASSED} 2>/dev/null ; then
+          # PYNEST_TEST_PASSED is a valid number
+          :
+        else
+          PYNEST_TEST_PASSED=0
+        fi
         PYNEST_TEST_FAILED=$(($PYNEST_TEST_ERRORS + $PYNEST_TEST_FAILURES))
-        PYNEST_TEST_PASSED=$(($PYNEST_TEST_TOTAL - $PYNEST_TEST_SKIPPED - $PYNEST_TEST_FAILED))
-
+        PYNEST_TEST_TOTAL=$(($PYNEST_TEST_FAILURES + $PYNEST_TEST_ERRORS + $PYNEST_TEST_SKIPPED + $PYNEST_TEST_PASSED))
     else
 
         echo
-        echo "  Nosetests unavailable. Using fallback test harness."
+        echo "  Pytest unavailable. Using fallback test harness."
         echo "  Fewer tests will be excuted."
         echo
 
@@ -771,6 +778,7 @@ if test "x${TEST_PYNEST}" = xtrue ; then
         PYNEST_TEST_PASSED="$( cat pynest_test_numbers.log | cut -d' ' -f2 )"
         PYNEST_TEST_SKIPPED="$( cat pynest_test_numbers.log | cut -d' ' -f3 )"
         PYNEST_TEST_FAILED="$( cat pynest_test_numbers.log | cut -d' ' -f4 )"
+        PYNEST_TEST_WARNINGS="0"
 
         rm -f "pynest_test_numbers.log"
 
@@ -781,6 +789,7 @@ if test "x${TEST_PYNEST}" = xtrue ; then
     echo "     Passed: ${PYNEST_TEST_PASSED}"
     echo "     Skipped: ${PYNEST_TEST_SKIPPED}"
     echo "     Failed: ${PYNEST_TEST_FAILED}"
+    echo "     Warnings: ${PYNEST_TEST_WARNINGS}"
 
     PYNEST_TEST_SKIPPED_TEXT="(${PYNEST_TEST_SKIPPED} PyNEST)"
     PYNEST_TEST_FAILED_TEXT="(${PYNEST_TEST_FAILED} PyNEST)"

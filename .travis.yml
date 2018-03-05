@@ -18,7 +18,7 @@
 # along with NEST.  If not, see <http://www.gnu.org/licenses/>.
 
 
-# This is the Travis CI top-level script to setup and run the NEST build and test environment. 
+# This is the Travis CI top-level script to setup and run the NEST build and test environment.
 
 
 language: minimal
@@ -80,11 +80,8 @@ before_install:
   # Install OpenMPI.
   - sudo apt-get install -y openmpi-bin libopenmpi-dev
 
-  # Install nose framework for the Python testsuite.
-  # (Please note that the nose-capturestderr plugin is needed to suppress NEST output to stderr which may interfere 
-  #  with the nosetests output hindering correct log-parsing. stdout it captured by default.)
-  - sudo apt-get install -y python-nose
-  - sudo pip install "nose-capturestderr==1.2"
+  # Install pytest framework for the Python testsuite.
+  - sudo pip install pytest
 
   # Install boost libraries required for VERA++ static code analysis.
   - sudo apt-get install -y libboost-filesystem-dev libboost-program-options-dev libboost-regex-dev libboost-wave-dev libboost-python-dev
@@ -135,9 +132,8 @@ install:
   - which python
   - python --version
   - which pip
-  - which nosetests
-  - nosetests --version
-  - nosetests --plugins
+  - which pytest
+  - pytest --version
   - which cmake
   - cmake --version
 
