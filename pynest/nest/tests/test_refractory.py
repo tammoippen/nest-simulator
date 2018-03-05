@@ -93,7 +93,7 @@ neurons_V_clamped = [
 # (t_ref = interspike)
 neurons_interspike = [
     "amat2_psc_exp",
-    "mat2_psc_exp",
+    "mat2_psc_exp",  # <- this one is flaky
     "ht_neuron",
 ]
 
@@ -121,6 +121,23 @@ ignore_model = [
     "pp_pop_psc_delta",
     "pp_psc_delta",
     "sli_neuron",
+
+    "gauss_rate_ipn",
+    "rate_transformer_gauss",
+    "rate_transformer_sigmoid",
+    "rate_transformer_sigmoid_gg_1998",
+    "rate_transformer_tanh",
+    "rate_transformer_threshold_lin",
+    "lin_rate_ipn",
+    "lin_rate_opn",
+    "rate_transformer_lin",
+    "siegert_neuron",
+    "sigmoid_rate_gg_1998_ipn",
+    "sigmoid_rate_ipn",
+    "tanh_rate_ipn",
+    "tanh_rate_opn",
+    "threshold_lin_rate_ipn",
+    "threshold_lin_rate_opn",
 ]
 
 tested_models = [m for m in nest.Models("nodes") if (nest.GetDefaults(
