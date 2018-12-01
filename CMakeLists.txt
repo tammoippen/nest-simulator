@@ -104,11 +104,6 @@ endif ()
 ##################           Find utility programs            ##################
 ################################################################################
 
-# needed for pynest test suite
-if ( ${with-python} STREQUAL "ON" OR  ${with-python} STREQUAL "2" OR  ${with-python} STREQUAL "3" )
-  find_program( NOSETESTS NAMES nosetests )
-endif ()
-
 # needed for target doc and fulldoc
 find_package( Doxygen )
 find_program( SED NAMES sed gsed )
@@ -194,7 +189,7 @@ file( MAKE_DIRECTORY ${PROJECT_BINARY_DIR}/reports/ )
 
 add_custom_target( installcheck
   COMMAND export NEST_PATH="${CMAKE_INSTALL_FULL_BINDIR}" &&
-    ${CMAKE_INSTALL_FULL_DATADIR}/extras/do_tests.sh --source-dir="${PROJECT_SOURCE_DIR}"
+    ${CMAKE_INSTALL_FULL_DATADIR}/extras/do_tests.sh
   WORKING_DIRECTORY "${PROJECT_BINARY_DIR}"
   COMMENT "Execute NEST's testsuite...."
 )

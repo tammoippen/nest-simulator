@@ -723,19 +723,19 @@ if test "x${TEST_PYNEST}" = x0 ; then
     echo "Phase 7: Running PyNEST tests."
     echo "------------------------------"
 
-    # If possible, we run using nosetests. To find out if nosetests work,
+    # If possible, we run using pytest. To find out if pytest work,
     # we proceed in two steps:
-    # 1. Check if nosetests is available
-    # 2. Check that nosetests supports --with-xunit by running nosetests.
-    #    We need to run nosetests on a directory without any Python test
+    # 1. Check if pytest is available
+    # 2. Check that pytest supports --with-xunit by running pytest.
+    #    We need to run pytest on a directory without any Python test
     #    files, because if they failed that would be interpreted as lack
-    #    of support for nosetests. We use the TEST_OUTDIR as Python-free
+    #    of support for pytest. We use the TEST_OUTDIR as Python-free
     #    dummy directory to search for tests.
 
     if command -v pytest >/dev/null 2>&1 ; then
 
         echo
-        echo "  Using pytest."
+        echo "  Using PyTest."
         echo
 
         pytest -vvv --junitxml=${TEST_OUTDIR}/pynest_tests.xml ${py_install_path} | tee -a ${TEST_LOGFILE}
@@ -779,12 +779,12 @@ if test "x${TEST_PYNEST}" = x0 ; then
           PYNEST_TEST_PASSED=0
         fi
         PYNEST_TEST_FAILED=$(($PYNEST_TEST_ERRORS + $PYNEST_TEST_FAILURES))
-        PYNEST_TEST_PASSED=$(($PYNEST_TEST_TOTAL - $PYNEST_TEST_SKIPPED - $PYNEST_TEST_FAILED))
         PYNEST_TEST_TOTAL=$(($PYNEST_TEST_FAILURES + $PYNEST_TEST_ERRORS + $PYNEST_TEST_SKIPPED + $PYNEST_TEST_PASSED))
+        PYNEST_TEST_PASSED=$(($PYNEST_TEST_TOTAL - $PYNEST_TEST_SKIPPED - $PYNEST_TEST_FAILED))
     else
 
         echo
-        echo "  Nosetests unavailable. Using fallback test harness."
+        echo "  pytest unavailable. Using fallback test harness."
         echo "  Fewer tests will be excuted."
         echo
 

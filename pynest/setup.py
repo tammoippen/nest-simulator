@@ -89,28 +89,24 @@ if do_cythonize:
         print('\n!!! Installing PyNEST requires Cython >= 0.19.2 !!!\n', file=sys.stderr)
         raise
 
-# Convert markdown README into RST, s.t. it displays nice on pypi.
-# Requires installation of pandoc (https://pandoc.org/) and
-# python wrapper (https://pypi.python.org/pypi/pypandoc)
-try:
-    import pypandoc
-    long_description = pypandoc.convert('README.md', 'rst')
-except(IOError, ImportError):
-    long_description = open('README.md').read()
-
 setup(
     name='PyNEST',
     version=version,
     description='PyNEST provides Python bindings for NEST',
-    long_description=long_description,
+    long_description=open('README.md').read(),
     author='The NEST Initiative',
     url='http://www.nest-simulator.org',
     license='GPLv2+',
     packages=find_packages(),
     ext_modules=extensions,
     keywords=['nest-simulator', 'nest', 'brain', 'simulator', 'neurons', 'synapses'],
+    setup_requires=[
+        'cython>=0.19.2',
+    ],
+    test_require=[
+        'pytest',
+    ],
     install_requires=[
-        # 'cython', # build dependancy
         'matplotlib',
         'numpy',
         'scipy',
