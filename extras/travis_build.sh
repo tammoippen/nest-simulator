@@ -238,6 +238,7 @@ echo "+               I N S T A L L   P y N E S T                               
 echo "+ + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + + +"
 echo "MSGBLD0283: Running sudo pip install ../pynest."
 echo $PATH
+sudo -H "PATH=$PATH" pip --no-cache-dir install cython pytest
 sudo -H "PATH=$PATH" pip --no-cache-dir install -v ../pynest
 echo "MSGBLD0286: PyNEST install completed."
 fi
